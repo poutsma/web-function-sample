@@ -26,7 +26,7 @@ It consists of the following types:
 Here are some sample `curl` commands that access resources exposed by this sample:
 
 ```sh
-curl -v 'http://localhost:8080/person
+curl -v 'http://localhost:8080/person'
 curl -v 'http://localhost:8080/person/1'
 curl -d '{"name":"Jack Doe","age":"16"}' -H 'Content-Type: application/json' -v 'http://localhost:8080/person'
 ```
