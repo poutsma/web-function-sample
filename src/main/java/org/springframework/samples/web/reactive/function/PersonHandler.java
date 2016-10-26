@@ -20,11 +20,8 @@ import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import org.springframework.web.reactive.function.Request;
-import org.springframework.web.reactive.function.Response;
-
-import static org.springframework.web.reactive.function.BodyExtractors.toMono;
-import static org.springframework.web.reactive.function.BodyInserters.fromPublisher;
+import org.springframework.web.reactive.function.ServerRequest;
+import org.springframework.web.reactive.function.ServerResponse;
 
 public class PersonHandler {
 
@@ -34,21 +31,20 @@ public class PersonHandler {
 		this.repository = repository;
 	}
 
-	public Response<Publisher<Person>> getPerson(Request request) {
-		Mono<Person> person = Mono.justOrEmpty(request.pathVariable("id"))
-				.map(Integer::valueOf)
-				.then(this.repository::getPerson);
-		return Response.ok().body(fromPublisher(person, Person.class));
+	public ServerResponse<Publisher<Person>> getPerson(ServerRequest request) {
+		int personId = Integer.valueOf(request.pathVariable("id"));
+		Mono<Person> person = this.repository.getPerson(personId);
+		return ServerResponse.ok().body(person, Person.class);
 	}
 
-	public Response<Mono<Void>> createPerson(Request request) {
-		Mono<Person> person = request.body(toMono(Person.class));
-		return Response.ok().build(this.repository.savePerson(person));
+	public ServerResponse<Mono<Void>> createPerson(ServerRequest request) {
+		Mono<Person> person = request.bodyToMono(Person.class);
+		return ServerResponse.ok().build(this.repository.savePerson(person));
 	}
 
-	public Response<Publisher<Person>> listPeople(Request request) {
+	public ServerResponse<Publisher<Person>> listPeople(ServerRequest request) {
 		Flux<Person> people = this.repository.allPeople();
-		return Response.ok().body(fromPublisher(people, Person.class));
+		return ServerResponse.ok().body(people, Person.class);
 	}
 
 }

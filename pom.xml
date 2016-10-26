@@ -29,6 +29,14 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
+		<repository>
+			<id>spring-snapshots</id>
+			<name>Spring Snapshots</name>
+			<url>https://repo.spring.io/libs-snapshots</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
 	</repositories>
 
 
@@ -56,7 +64,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web-reactive</artifactId>
-			<version>5.0.0.M2</version>
+			<version>5.0.0.BUILD-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
