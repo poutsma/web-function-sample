@@ -9,21 +9,27 @@ It consists of the following types:
 | `PersonRepository`      | Reactive repository for `Person`              |
 | `DummyPersonRepository` | Dummy implementation of `PersonRepository`    |
 | `PersonHandler`         | Web handler that exposes a `PersonRepository` |
-| `Driver`                | Contains a `main` method to start the sample  |
+| `Server`                | Contains a `main` method to start the server  |
+| `Client`                | Contains a `main` method to start the client  |
 
-### Running in Reactor Netty
+### Running the Reactor Netty server
  - Build using maven
- - Run the `org.springframework.samples.web.reactive.function.Driver` class
+ - Run the `org.springframework.samples.web.reactive.function.Server` class
  
-### Running in Tomcat
- - Comment out the `startReactorServer()` line in `Driver.java`
- - Uncomment the `startTomcatServer()` line in `Driver.java`
+### Running the Tomcat server
+ - Comment out the `startReactorServer()` line in `Server.java`
+ - Uncomment the `startTomcatServer()` line in `Server.java`
  - Build using maven
- - Run the `org.springframework.samples.web.reactive.function.Driver` class
+ - Run the `org.springframework.samples.web.reactive.function.Server` class
+
+### Running the Client
+ - Build using maven
+ - Run the `org.springframework.samples.web.reactive.function.Client` class
  
 ### Sample curl commands
 
-Here are some sample `curl` commands that access resources exposed by this sample:
+Instead of running the client, here are some sample `curl` commands that access resources exposed
+by this sample:
 
 ```sh
 curl -v 'http://localhost:8080/person'

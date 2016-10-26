@@ -34,15 +34,15 @@ import static org.springframework.web.reactive.function.RequestPredicates.conten
 import static org.springframework.web.reactive.function.RouterFunctions.route;
 import static org.springframework.web.reactive.function.RouterFunctions.toHttpHandler;
 
-public class Driver {
+public class Server {
 
 	public static final String HOST = "localhost";
 
 	public static final int PORT = 8080;
 
 	public static void main(String[] args) throws Exception {
-		Driver driver = new Driver();
-		driver.startReactorServer();
+		Server server = new Server();
+		server.startReactorServer();
 //		driver.startTomcatServer();
 
 		System.out.println("Press ENTER to exit.");
