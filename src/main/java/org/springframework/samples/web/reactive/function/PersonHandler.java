@@ -16,7 +16,6 @@
 
 package org.springframework.samples.web.reactive.function;
 
-import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -31,7 +30,7 @@ public class PersonHandler {
 		this.repository = repository;
 	}
 
-	public ServerResponse<Publisher<Person>> getPerson(ServerRequest request) {
+	public ServerResponse<Mono<Person>> getPerson(ServerRequest request) {
 		int personId = Integer.valueOf(request.pathVariable("id"));
 		Mono<Person> person = this.repository.getPerson(personId);
 		return ServerResponse.ok().body(person, Person.class);
@@ -42,7 +41,7 @@ public class PersonHandler {
 		return ServerResponse.ok().build(this.repository.savePerson(person));
 	}
 
-	public ServerResponse<Publisher<Person>> listPeople(ServerRequest request) {
+	public ServerResponse<Flux<Person>> listPeople(ServerRequest request) {
 		Flux<Person> people = this.repository.allPeople();
 		return ServerResponse.ok().body(people, Person.class);
 	}
