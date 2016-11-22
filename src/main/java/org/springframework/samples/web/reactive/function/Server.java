@@ -54,10 +54,10 @@ public class Server {
 		PersonHandler handler = new PersonHandler(repository);
 
 		return route(GET("/person/{id}"), handler::getPerson)
-				.and(route(GET("/person").and(accept(APPLICATION_JSON)),
-						handler::listPeople))
-				.and(route(POST("/person").and(contentType(APPLICATION_JSON)),
-						handler::createPerson));
+				.andRoute(GET("/person").and(accept(APPLICATION_JSON)),
+						handler::listPeople)
+				.andRoute(POST("/person").and(contentType(APPLICATION_JSON)),
+						handler::createPerson);
 	}
 
 	public void startReactorServer() throws InterruptedException {
