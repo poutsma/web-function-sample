@@ -22,10 +22,10 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
-import org.springframework.http.codec.BodyInserters;
-import org.springframework.web.client.reactive.ClientRequest;
-import org.springframework.web.client.reactive.ClientResponse;
-import org.springframework.web.client.reactive.WebClient;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.ClientRequest;
+import org.springframework.web.reactive.function.client.ClientResponse;
+import org.springframework.web.reactive.function.client.WebClient;
 
 /**
  * @author Arjen Poutsma
@@ -37,8 +37,8 @@ public class Client {
 
 	public static void main(String[] args) throws Exception {
 		Client client = new Client();
-		client.printAllPeople();
 		client.createPerson();
+		client.printAllPeople();
 	}
 
 	public void printAllPeople() {

@@ -19,26 +19,20 @@ package org.springframework.samples.web.reactive.function;
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
-import org.reactivestreams.Publisher;
-import reactor.core.publisher.Flux;
-import reactor.ipc.netty.http.HttpServer;
+import reactor.ipc.netty.http.server.HttpServer;
 
 import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
 import org.springframework.http.server.reactive.ServletHttpHandlerAdapter;
-import org.springframework.web.reactive.function.HandlerFilterFunction;
-import org.springframework.web.reactive.function.HandlerFunction;
-import org.springframework.web.reactive.function.RouterFunction;
-import org.springframework.web.reactive.function.ServerRequest;
-import org.springframework.web.reactive.function.ServerResponse;
+import org.springframework.web.reactive.function.server.RouterFunction;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.web.reactive.function.RequestPredicates.GET;
-import static org.springframework.web.reactive.function.RequestPredicates.POST;
-import static org.springframework.web.reactive.function.RequestPredicates.accept;
-import static org.springframework.web.reactive.function.RequestPredicates.contentType;
-import static org.springframework.web.reactive.function.RouterFunctions.route;
-import static org.springframework.web.reactive.function.RouterFunctions.toHttpHandler;
+import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
+import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
+import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
+import static org.springframework.web.reactive.function.server.RequestPredicates.contentType;
+import static org.springframework.web.reactive.function.server.RouterFunctions.route;
+import static org.springframework.web.reactive.function.server.RouterFunctions.toHttpHandler;
 
 public class Server {
 
@@ -48,8 +42,8 @@ public class Server {
 
 	public static void main(String[] args) throws Exception {
 		Server server = new Server();
-		server.startReactorServer();
-//		server.startTomcatServer();
+//		server.startReactorServer();
+		server.startTomcatServer();
 
 		System.out.println("Press ENTER to exit.");
 		System.in.read();
@@ -59,34 +53,9 @@ public class Server {
 		PersonRepository repository = new DummyPersonRepository();
 		PersonHandler handler = new PersonHandler(repository);
 
-		// Note that andSame() groups routes with the same response body type together...
-		RouterFunction<Publisher<Person>> personRoutes =
-				route(GET("/person/{id}"), handler::getPerson)
-				.andSame(route(GET("/person").and(accept(APPLICATION_JSON)),
-						handler::listPeople));
-
-		// ... which allows us filter these routes with one filter.
-		RouterFunction<Publisher<Person>> filteredPersonRoutes =
-				personRoutes.filter(this::toUpperCase);
-
-		return filteredPersonRoutes
-				.andRoute(POST("/person").and(contentType(APPLICATION_JSON)),
-						handler::createPerson);
-	}
-
-	/**
-	 * A {@link HandlerFilterFunction} method that converts the names of all {@link Person} objects
-	 * contained in the response body to upper case. Similar methods could do object-level
-	 * authorisation, auditing, logging, and related cross-cutting concerns.
-	 */
-	private ServerResponse<Publisher<Person>> toUpperCase(ServerRequest request,
-			HandlerFunction<Publisher<Person>> next) {
-		ServerResponse<Publisher<Person>> response = next.handle(request);
-		Publisher<Person> people = response.body();
-		Flux<Person> map = Flux.from(people)
-				.map(person -> new Person(person.getName().toUpperCase(), person.getAge()));
-		return ServerResponse.from(response).body(map, Person.class);
-
+		return route(GET("/person/{id}").and(accept(APPLICATION_JSON)), handler::getPerson)
+				.andRoute(GET("/person").and(accept(APPLICATION_JSON)), handler::listPeople)
+				.andRoute(POST("/person").and(contentType(APPLICATION_JSON)), handler::createPerson);
 	}
 
 	public void startReactorServer() throws InterruptedException {
@@ -95,7 +64,7 @@ public class Server {
 
 		ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(httpHandler);
 		HttpServer server = HttpServer.create(HOST, PORT);
-		server.startAndAwait(adapter);
+		server.newHandler(adapter).block();
 	}
 
 	public void startTomcatServer() throws LifecycleException {
