@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2002-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,8 +29,8 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
 import static org.springframework.web.reactive.function.server.RequestPredicates.POST;
-import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 import static org.springframework.web.reactive.function.server.RequestPredicates.contentType;
+import static org.springframework.web.reactive.function.server.RequestPredicates.json;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 import static org.springframework.web.reactive.function.server.RouterFunctions.toHttpHandler;
 
@@ -53,8 +53,8 @@ public class Server {
 		PersonRepository repository = new DummyPersonRepository();
 		PersonHandler handler = new PersonHandler(repository);
 
-		return route(GET("/person/{id}").and(accept(APPLICATION_JSON)), handler::getPerson)
-				.andRoute(GET("/person").and(accept(APPLICATION_JSON)), handler::listPeople)
+		return route(GET("/person/{id}").and(json()), handler::getPerson)
+				.andRoute(GET("/person").and(json()), handler::listPeople)
 				.andRoute(POST("/person").and(contentType(APPLICATION_JSON)), handler::createPerson);
 	}
 

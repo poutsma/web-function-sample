@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2002-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,23 +16,26 @@
 
 package org.springframework.samples.web.reactive.function;
 
+import java.net.URI;
 import java.util.List;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import org.springframework.http.HttpMethod;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.ClientResponse;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.ExchangeFunction;
+import org.springframework.web.reactive.function.client.ExchangeFunctions;
 
 /**
  * @author Arjen Poutsma
  */
 public class Client {
 
-	private WebClient client = WebClient.create(new ReactorClientHttpConnector());
+	private ExchangeFunction exchange = ExchangeFunctions.create(new ReactorClientHttpConnector());
 
 
 	public static void main(String[] args) throws Exception {
@@ -42,10 +45,10 @@ public class Client {
 	}
 
 	public void printAllPeople() {
-		ClientRequest<Void> request = ClientRequest.GET("http://{host}:{port}/person",
-				Server.HOST, Server.PORT).build();
+		URI uri = URI.create(String.format("http://%s:%d/person", Server.HOST, Server.PORT));
+		ClientRequest request = ClientRequest.method(HttpMethod.GET, uri).build();
 
-		Flux<Person> people = client.exchange(request)
+		Flux<Person> people = exchange.exchange(request)
 				.flatMap(response -> response.bodyToFlux(Person.class));
 
 		Mono<List<Person>> peopleList = people.collectList();
@@ -53,13 +56,13 @@ public class Client {
 	}
 
 	public void createPerson() {
+		URI uri = URI.create(String.format("http://%s:%d/person", Server.HOST, Server.PORT));
 		Person jack = new Person("Jack Doe", 16);
 
-		ClientRequest<Person> request = ClientRequest.POST("http://{host}:{port}/person",
-				Server.HOST, Server.PORT)
-				.body(BodyInserters.fromObject(jack));
+		ClientRequest request = ClientRequest.method(HttpMethod.POST, uri)
+				.body(BodyInserters.fromObject(jack)).build();
 
-		Mono<ClientResponse> response = client.exchange(request);
+		Mono<ClientResponse> response = exchange.exchange(request);
 
 		System.out.println(response.block().statusCode());
 	}
