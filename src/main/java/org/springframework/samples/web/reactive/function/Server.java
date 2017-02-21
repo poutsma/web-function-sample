@@ -59,9 +59,8 @@ public class Server {
 
 		return nest(pathPrefix("/person"),
 				nest(accept(APPLICATION_JSON),
-						route(GET("/{id}"), handler::getPerson)
-						.andRoute(method(HttpMethod.GET), handler::listPeople)
-				).andRoute(POST("/").and(contentType(APPLICATION_JSON)), handler::createPerson));
+						route(GET("/foo/"), handler::listPeople)
+				));
 	}
 
 	public void startReactorServer() throws InterruptedException {
