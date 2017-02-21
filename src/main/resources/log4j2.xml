@@ -22,6 +22,7 @@
 		</Console>
 	</Appenders>
 	<Loggers>
+		<Logger name="reactor.ipc.netty" level="debug" />
 		<Logger name="org.springframework" level="info" />
 		<Logger name="org.springframework.web.reactive.function" level="trace" />
 		<Logger name="org.springframework.web" level="debug" />
