@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2002-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,14 @@
 
 package org.springframework.samples.web.reactive.function;
 
-import org.reactivestreams.Publisher;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.web.reactive.function.BodyInserters.fromObject;
 
 public class PersonHandler {
 
@@ -34,11 +36,9 @@ public class PersonHandler {
 	public Mono<ServerResponse> getPerson(ServerRequest request) {
 		int personId = Integer.valueOf(request.pathVariable("id"));
 		Mono<ServerResponse> notFound = ServerResponse.notFound().build();
-		return this.repository.getPerson(personId)
-				.then(person -> {
-					Publisher<Person> personPublisher = Mono.just(person);
-					return ServerResponse.ok().body(personPublisher, Person.class);
-				})
+		Mono<Person> personMono = this.repository.getPerson(personId);
+		return personMono
+				.then(person -> ServerResponse.ok().contentType(APPLICATION_JSON).body(fromObject(person)))
 				.otherwiseIfEmpty(notFound);
 	}
 
@@ -50,7 +50,7 @@ public class PersonHandler {
 
 	public Mono<ServerResponse> listPeople(ServerRequest request) {
 		Flux<Person> people = this.repository.allPeople();
-		return ServerResponse.ok().body(people, Person.class);
+		return ServerResponse.ok().contentType(APPLICATION_JSON).body(people, Person.class);
 	}
 
 }

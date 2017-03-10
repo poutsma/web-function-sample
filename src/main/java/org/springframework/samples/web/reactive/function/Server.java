@@ -26,6 +26,7 @@ import org.springframework.http.server.reactive.HttpHandler;
 import org.springframework.http.server.reactive.ReactorHttpHandlerAdapter;
 import org.springframework.http.server.reactive.ServletHttpHandlerAdapter;
 import org.springframework.web.reactive.function.server.RouterFunction;
+import org.springframework.web.reactive.function.server.ServerResponse;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.web.reactive.function.server.RequestPredicates.GET;
@@ -53,7 +54,7 @@ public class Server {
 		System.in.read();
 	}
 
-	public RouterFunction<?> routingFunction() {
+	public RouterFunction<ServerResponse> routingFunction() {
 		PersonRepository repository = new DummyPersonRepository();
 		PersonHandler handler = new PersonHandler(repository);
 
@@ -65,7 +66,7 @@ public class Server {
 	}
 
 	public void startReactorServer() throws InterruptedException {
-		RouterFunction<?> route = routingFunction();
+		RouterFunction<ServerResponse> route = routingFunction();
 		HttpHandler httpHandler = toHttpHandler(route);
 
 		ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(httpHandler);
