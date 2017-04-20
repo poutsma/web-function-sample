@@ -18,7 +18,6 @@ package org.springframework.samples.web.reactive.function;
 
 import org.junit.Before;
 import org.junit.Test;
-import reactor.core.publisher.Mono;
 
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -34,6 +33,7 @@ public class PersonHandlerTests {
 	public void createTestClient() {
 		Server server = new Server();
 		this.testClient = WebTestClient.bindToRouterFunction(server.routingFunction())
+				.configureClient()
 				.baseUrl("http://localhost/person")
 				.build();
 	}
@@ -44,8 +44,16 @@ public class PersonHandlerTests {
 				.uri("/1")
 				.exchange()
 				.expectStatus().isOk()
-				.expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
-				.expectBody(Person.class).list().hasSize(1).returnResult();
+				.expectHeader().contentType(MediaType.APPLICATION_JSON)
+				.expectBodyList(Person.class).hasSize(1).returnResult();
+	}
+
+	@Test
+	public void getPersonNotFound() throws Exception {
+		this.testClient.get()
+				.uri("/42")
+				.exchange()
+				.expectStatus().isNotFound();
 	}
 
 	@Test
@@ -54,8 +62,8 @@ public class PersonHandlerTests {
 				.uri("/")
 				.exchange()
 				.expectStatus().isOk()
-				.expectHeader().contentType(MediaType.APPLICATION_JSON_UTF8)
-				.expectBody(Person.class).list().hasSize(2).returnResult();
+				.expectHeader().contentType(MediaType.APPLICATION_JSON)
+				.expectBodyList(Person.class).hasSize(2).returnResult();
 	}
 
 	@Test
@@ -65,7 +73,8 @@ public class PersonHandlerTests {
 		this.testClient.post()
 				.uri("/")
 				.contentType(MediaType.APPLICATION_JSON)
-				.exchange(Mono.just(jack), Person.class)
+				.body(jack)
+				.exchange()
 				.expectStatus().isOk();
 
 	}

@@ -38,8 +38,8 @@ public class PersonHandler {
 		Mono<ServerResponse> notFound = ServerResponse.notFound().build();
 		Mono<Person> personMono = this.repository.getPerson(personId);
 		return personMono
-				.then(person -> ServerResponse.ok().contentType(APPLICATION_JSON).body(fromObject(person)))
-				.otherwiseIfEmpty(notFound);
+				.flatMap(person -> ServerResponse.ok().contentType(APPLICATION_JSON).body(fromObject(person)))
+				.switchIfEmpty(notFound);
 	}
 
 

@@ -49,7 +49,7 @@ public class Client {
 		ClientRequest request = ClientRequest.method(HttpMethod.GET, uri).build();
 
 		Flux<Person> people = exchange.exchange(request)
-				.flatMap(response -> response.bodyToFlux(Person.class));
+				.flatMapMany(response -> response.bodyToFlux(Person.class));
 
 		Mono<List<Person>> peopleList = people.collectList();
 		System.out.println(peopleList.block());

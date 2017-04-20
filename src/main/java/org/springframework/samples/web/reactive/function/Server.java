@@ -34,7 +34,7 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 import static org.springframework.web.reactive.function.server.RequestPredicates.contentType;
 import static org.springframework.web.reactive.function.server.RequestPredicates.method;
-import static org.springframework.web.reactive.function.server.RequestPredicates.pathPrefix;
+import static org.springframework.web.reactive.function.server.RequestPredicates.path;
 import static org.springframework.web.reactive.function.server.RouterFunctions.nest;
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 import static org.springframework.web.reactive.function.server.RouterFunctions.toHttpHandler;
@@ -58,7 +58,7 @@ public class Server {
 		PersonRepository repository = new DummyPersonRepository();
 		PersonHandler handler = new PersonHandler(repository);
 
-		return nest(pathPrefix("/person"),
+		return nest(path("/person"),
 				nest(accept(APPLICATION_JSON),
 						route(GET("/{id}"), handler::getPerson)
 						.andRoute(method(HttpMethod.GET), handler::listPeople)

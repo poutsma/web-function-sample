@@ -1,5 +1,5 @@
 /*
- * Copyright 2002-2016 the original author or authors.
+ * Copyright 2002-2017 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,11 +46,10 @@ public class DummyPersonRepository implements PersonRepository {
 
 	@Override
 	public Mono<Void> savePerson(Mono<Person> personMono) {
-		return personMono.then(person -> {
+		return personMono.doOnNext(person -> {
 			int id = people.size() + 1;
 			people.put(id, person);
 			System.out.format("Saved %s with id %d%n", person, id);
-			return Mono.empty();
-		});
+		}).thenEmpty(Mono.empty());
 	}
 }
