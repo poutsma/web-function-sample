@@ -73,7 +73,7 @@ public class PersonHandlerTests {
 		this.testClient.post()
 				.uri("/")
 				.contentType(MediaType.APPLICATION_JSON)
-				.body(jack)
+				.syncBody(jack)
 				.exchange()
 				.expectStatus().isOk();
 
