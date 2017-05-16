@@ -60,7 +60,7 @@
 		<dependency>
 			<groupId>io.projectreactor</groupId>
 			<artifactId>reactor-bom</artifactId>
-			<version>Bismuth-BUILD-SNAPSHOT</version>
+			<version>Bismuth-M1</version>
             <type>pom</type>
             <scope>import</scope>
 		</dependency>
@@ -87,7 +87,7 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webflux</artifactId>
-			<version>5.0.0.BUILD-SNAPSHOT</version>
+			<version>5.0.0.RC1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
